@@ -2,11 +2,13 @@
 
 describe('Central de Atendimento ao Cliente TAT', function() {
     
-    beforeEach(() => {
+    beforeEach(function(){
         cy.visit('https://cac-tat.s3.eu-central-1.amazonaws.com/index.html')
-      })
+    }  
+        
+      )
     
-    const longtext = 'TEXTO TEXTO TEXTO TEXTO TEXTO TEXTO TEXTO TEXTO TEXTO TEXTO TEXTO TEXTO TEXTO TEXTO TEXTO TEXTO TEXTO TEXTO TEXTO TEXTO TEXTO  TEXTO TEXTO TEXTO TEXTO TEXTO TEXTO TEXTO'
+    const longtext = Cypress._.repeat('TEXTO ', 25)
 
     it('preenche os campos obrigatórios e envia o formulário', function() {
         
@@ -62,7 +64,10 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     it('exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios', function() {
 
     cy.get('.button').click()
+    cy.clock()
     cy.get('.error').should('be.visible')
+    cy.tick(3000)
+
     })
 
     it('preencher campos do formulario atravez de um comando customizado', function(){
@@ -106,9 +111,22 @@ describe('Central de Atendimento ao Cliente TAT', function() {
 
     })
 
-    it.only('testa a página da política de privacidade de forma independente', function(){
+    it('testa a página da política de privacidade de forma independente', function(){
         cy.contains('Política de Privacidade').invoke('removeAttr', 'target').click()
         cy.get('#title').should('have.text', 'CAC TAT - Política de privacidade')
 
-    })
+    }) 
+
+    it('usar invoke show e hide', function(){
+        cy.get('.success').invoke('show').should('be.be.visible')
+        cy.get('.success').invoke('hide').should('not.be.not.be.visible')
+    }) 
+
+    it('usar invoke para preencher campo mais rapido', function(){
+        cy.get('textarea').invoke('val', longtext)
+    }) 
+
+    it.only('desafio mostrar o gato', function(){
+        cy.get('#cat').invoke('show').should('be.be.visible')
+    }) 
 })
